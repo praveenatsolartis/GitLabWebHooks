@@ -49,7 +49,6 @@ public class GitWebHookService {
 			System.out.println(pushHook.getUserEmail());
 			objectMapper.enable(SerializationConfig.Feature.INDENT_OUTPUT);
 			objectMapper.writeValue(new File(systemPath+"receivedRequest"+System.currentTimeMillis()+".json"), pushHook);
-		
 		} catch (JsonParseException e) {
 			e.printStackTrace();
 		} catch (JsonMappingException e) {
@@ -72,14 +71,9 @@ public class GitWebHookService {
 		String value="";
 		try{
 			InitialContext ic = new InitialContext();
-			
 			PropertyReaderSingleton propertyReaderSingleton = null;
-			
 			propertyReaderSingleton = (PropertyReaderSingleton) ic.lookup("java:global/GitClient/PropertyReaderSingleton!com.beans.PropertyReaderSingleton");
-			
 			value = propertyReaderSingleton.getValue(key);
-			
-			
 		}catch(Exception e){
 			System.out.println(e.getMessage());
 		}
