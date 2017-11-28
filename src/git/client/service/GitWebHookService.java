@@ -42,11 +42,12 @@ public class GitWebHookService {
 		responseDetail.setId("2");
 		responseDetail.setStatus("Sucess");
 		ObjectMapper objectMapper = new ObjectMapper();
-		String systemPath = "D:\\Praveen\\GitLabHooks\\";
+		String systemPath = "D:\\Praveen\\GitLabHooks\\"; 
 		pushHook = null;
 		try {
 			pushHook = objectMapper.readValue(data, git.client.hooks.PushHookV2.class);
 			System.out.println(pushHook.getUserEmail());
+			
 			objectMapper.enable(SerializationConfig.Feature.INDENT_OUTPUT);
 			objectMapper.writeValue(new File(systemPath+"receivedRequest"+System.currentTimeMillis()+".json"), pushHook);
 		} catch (JsonParseException e) {
