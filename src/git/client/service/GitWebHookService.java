@@ -22,6 +22,7 @@ import org.codehaus.jackson.map.ObjectMapper;
 import org.codehaus.jackson.map.SerializationConfig;
 
 import com.beans.PropertyReaderSingleton;
+import com.beans.RepoSynchronizer;
 
 import git.client.hooks.PushHookV2;
 import git.client.utility.ResponseDetail;
@@ -47,7 +48,7 @@ public class GitWebHookService {
 		try {
 			pushHook = objectMapper.readValue(data, git.client.hooks.PushHookV2.class);
 			System.out.println(pushHook.getUserEmail());
-			
+			RepoSynchronizer.synchronize(pushHook);
 			objectMapper.enable(SerializationConfig.Feature.INDENT_OUTPUT);
 			objectMapper.writeValue(new File(systemPath+"receivedRequest"+System.currentTimeMillis()+".json"), pushHook);
 		} catch (JsonParseException e) {
