@@ -42,7 +42,7 @@ public class GitWebHookService {
 		ResponseDetail responseDetail = new ResponseDetail();
 		responseDetail.setId("2");
 		responseDetail.setStatus("Sucess");
-		ObjectMapper objectMapper = new ObjectMapper();
+		ObjectMapper objectMapper = new ObjectMapper(); 
 		String systemPath = "D:\\Praveen\\GitLabHooks\\"; 
 		pushHook = null;
 		try {
