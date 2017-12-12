@@ -1,6 +1,7 @@
 package com.beans;
 
 import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.util.Properties;
 
 import javax.annotation.PostConstruct;
@@ -11,18 +12,23 @@ import javax.ejb.Startup;
 @Startup
 public class PropertyReaderSingleton {
 
-	private Properties properties;
+	private  Properties properties = new Properties();
 	
 	@PostConstruct
-	public void loadProperties(){
+	public  void loadProperties(){
+		
 		FileInputStream fileInputStream = null;
 		try{
-			fileInputStream = new FileInputStream("D:\\Praveen\\GitLabHooks\\Property\\EnvironmentProperties.properties");
+			try{
+			fileInputStream = new FileInputStream("D:\\Praveen\\GitLabHooks\\Property\\GitLabConfiguration.properties");
+			}
+			catch(FileNotFoundException fileNotFoundException){
+				System.out.println(fileNotFoundException.getMessage());
+			}
 			if (fileInputStream != null) {
 		        this.properties.load(fileInputStream);
+		        
 		      }
-			
-			
 		}catch(Exception e){
 			System.out.println(e.getMessage());
 		}finally{
@@ -36,13 +42,10 @@ public class PropertyReaderSingleton {
 		      {
 		      System.out.println(exception.getMessage());
 		      }
-			
 		}
-		
-		
 	}
 	
-	public String getValue(String key){
+	public  String getValue(String key){
 		String value="";
 		try{
 			value=this.properties.getProperty(key);
@@ -52,5 +55,7 @@ public class PropertyReaderSingleton {
 		return value;
 	}
 	
-	
+	public void reloadProperty(){
+	loadProperties();	
+	}
 }

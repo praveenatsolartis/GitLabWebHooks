@@ -22,21 +22,29 @@ public class RepoSynchronizer {
 			while(filesIterator.hasNext()){
 				System.out.println(filesIterator.next());
 			}
+			
 		}
 		
+		String[] uriArray = pushHook.getRef().split("/");
+		String branchName = uriArray[uriArray.length-1];
+		System.out.println("RepoSynchronizer :: BranchName :: "+branchName);
 		Runtime rt = Runtime.getRuntime();
-		String cmdd = "cmd /c start D:\\Praveen\\GitLabHooks\\gitlabHA.bat";
+		String cmdd = "cmd /c start D:\\Praveen\\GitLabHooks\\gitlabHA.bat "+branchName;
+		
 		Process proc = rt.exec(cmdd);
 		BufferedReader input = new BufferedReader(new InputStreamReader(proc.getInputStream()));
 		String temp = "";
-		while ((temp = input.readLine()) != null)
-		   System.out.println(temp);
+		while ((temp = input.readLine()) != null){
+		 System.out.println("true");
+			System.out.println(temp);
+		}
 		input.close();
 	}
 	
 	public static void main(String args[]) throws IOException{
 		Runtime rt = Runtime.getRuntime();
-		String cmdd = "cmd /c start D:\\Praveen\\GitLabHooks\\gitlabHA.bat";
+		String branchName = "BranchOne";
+		String cmdd = "cmd /c start D:\\Praveen\\GitLabHooks\\gitlabHA.bat "+branchName;
 		Process proc = rt.exec(cmdd);
 		BufferedReader input = new BufferedReader(new InputStreamReader(proc.getInputStream()));
 		String temp = "";

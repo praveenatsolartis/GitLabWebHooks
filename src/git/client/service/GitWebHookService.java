@@ -4,6 +4,7 @@ import java.io.File;
 import java.io.IOException;
 
 import javax.naming.InitialContext;
+import javax.naming.NamingException;
 import javax.servlet.http.HttpServletRequest;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.GET;
@@ -52,17 +53,14 @@ public class GitWebHookService {
 			objectMapper.enable(SerializationConfig.Feature.INDENT_OUTPUT);
 			objectMapper.writeValue(new File(systemPath+"receivedRequest"+System.currentTimeMillis()+".json"), pushHook);
 		} catch (JsonParseException e) {
-			e.printStackTrace();
 		} catch (JsonMappingException e) {
-			e.printStackTrace();
+			System.out.println(e.getMessage());
 		} catch (IOException e) {
-			e.printStackTrace();
+			System.out.println(e.getMessage());
 		}
-		
 		rBuilder = Response.ok(responseDetail).type(MediaType.APPLICATION_JSON);
 		response = rBuilder.build();
 		return response;
-		
 	}
 	
 	
@@ -74,15 +72,25 @@ public class GitWebHookService {
 		try{
 			InitialContext ic = new InitialContext();
 			PropertyReaderSingleton propertyReaderSingleton = null;
-			propertyReaderSingleton = (PropertyReaderSingleton) ic.lookup("java:global/GitClient/PropertyReaderSingleton!com.beans.PropertyReaderSingleton");
-			value = propertyReaderSingleton.getValue(key);
+			propertyReaderSingleton = (PropertyReaderSingleton) ic.lookup("java:module/PropertyReaderSingleton!com.beans.PropertyReaderSingleton");
+			value = (String) propertyReaderSingleton.getValue(key);
 		}catch(Exception e){
 			System.out.println(e.getMessage());
 		}
-		
-		System.out.println("Inside Service Layer"+value);
+		System.out.println("Inside Service Layer " + value);
 		return Response.status(200)
 				.entity("Value " + value)
 				.build();
+	}
+	
+	@GET
+	@Path("/reloadConfigurations")
+	@Produces(MediaType.TEXT_PLAIN)
+	public Response reload() throws NamingException{
+		InitialContext ic = new InitialContext();
+		PropertyReaderSingleton propertyReaderSingleton = null;
+		propertyReaderSingleton = (PropertyReaderSingleton) ic.lookup("java:module/PropertyReaderSingleton!com.beans.PropertyReaderSingleton");
+		propertyReaderSingleton.reloadProperty();
+		return Response.status(200).entity("Reload Sucessfully!!!").build();
 	}
 }
