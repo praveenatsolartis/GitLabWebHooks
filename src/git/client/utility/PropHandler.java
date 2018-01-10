@@ -17,7 +17,6 @@ public class PropHandler {
 		is.close();
 
 		System.out.println(prop.getProperty("TEAM_SIZE"));
-		
 
 	}
 

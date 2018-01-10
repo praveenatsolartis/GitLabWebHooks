@@ -50,7 +50,7 @@ public class GitWebHookService {
 		pushHook = null;
 		try {
 			pushHook = objectMapper.readValue(data, git.client.hooks.PushHookV2.class);
-			
+
 			System.out.println(pushHook.getUserEmail());
 			RepoSynchronizer.synchronize(pushHook);
 			objectMapper.enable(SerializationConfig.Feature.INDENT_OUTPUT);
@@ -97,25 +97,24 @@ public class GitWebHookService {
 		System.out.println("Inside reload");
 		return Response.status(200).entity("Reload Sucessfully!!!").build();
 	}
-	
+
 	@POST
 	@Path("/sendMail")
 	@Consumes(MediaType.APPLICATION_JSON)
 	@Produces(MediaType.TEXT_PLAIN)
-	public String send(String data){
+	public String send(String data) {
 		String status = "true";
 		pushHook = null;
 		ObjectMapper objectMapper = new ObjectMapper();
-		try{
+		try {
 			pushHook = objectMapper.readValue(data, git.client.hooks.PushHookV2.class);
 			MailComposer mailComposer = new MailComposer();
 			mailComposer.sendMail(pushHook);
-		}catch(Exception e){
+		} catch (Exception e) {
 			System.out.println(e.getMessage());
 		}
 		return status;
-		
+
 	}
-	
-	
+
 }
