@@ -26,6 +26,8 @@ import com.beans.PropertyReaderSingleton;
 import com.beans.RepoSynchronizer;
 
 import git.client.hooks.PushHookV2;
+import git.client.utility.MailComposer;
+import git.client.utility.PostDriverChecker;
 import git.client.utility.ResponseDetail;
 
 @Path("/webhookservice")
@@ -37,21 +39,23 @@ public class GitWebHookService {
 	@Path("/event")
 	@Consumes(MediaType.APPLICATION_JSON)
 	@Produces(MediaType.APPLICATION_JSON)
-	public Response testMethod(String data, @Context HttpHeaders httpHeaders, @Context HttpServletRequest httpRequest){
-		Response.ResponseBuilder rBuilder=null;
-		Response response =null;
+	public Response testMethod(String data, @Context HttpHeaders httpHeaders, @Context HttpServletRequest httpRequest) {
+		Response.ResponseBuilder rBuilder = null;
+		Response response = null;
 		ResponseDetail responseDetail = new ResponseDetail();
 		responseDetail.setId("2");
 		responseDetail.setStatus("Sucess");
-		ObjectMapper objectMapper = new ObjectMapper(); 
-		String systemPath = "D:\\Praveen\\GitLabHooks\\"; 
+		ObjectMapper objectMapper = new ObjectMapper();
+		String systemPath = "D:\\Praveen\\GitLabHooks\\";
 		pushHook = null;
 		try {
 			pushHook = objectMapper.readValue(data, git.client.hooks.PushHookV2.class);
+			
 			System.out.println(pushHook.getUserEmail());
 			RepoSynchronizer.synchronize(pushHook);
 			objectMapper.enable(SerializationConfig.Feature.INDENT_OUTPUT);
-			objectMapper.writeValue(new File(systemPath+"receivedRequest"+System.currentTimeMillis()+".json"), pushHook);
+			objectMapper.writeValue(new File(systemPath + "receivedRequest" + System.currentTimeMillis() + ".json"),
+					pushHook);
 		} catch (JsonParseException e) {
 		} catch (JsonMappingException e) {
 			System.out.println(e.getMessage());
@@ -62,35 +66,56 @@ public class GitWebHookService {
 		response = rBuilder.build();
 		return response;
 	}
-	
-	
+
 	@GET
 	@Path("/bean/{key}")
 	@Produces(MediaType.TEXT_PLAIN)
-	public Response invokePropertyReaderSingleton(@PathParam("key")String key){
-		String value="";
-		try{
+	public Response invokePropertyReaderSingleton(@PathParam("key") String key) {
+		String value = "";
+		try {
 			InitialContext ic = new InitialContext();
 			PropertyReaderSingleton propertyReaderSingleton = null;
-			propertyReaderSingleton = (PropertyReaderSingleton) ic.lookup("java:module/PropertyReaderSingleton!com.beans.PropertyReaderSingleton");
+			propertyReaderSingleton = (PropertyReaderSingleton) ic
+					.lookup("java:module/PropertyReaderSingleton!com.beans.PropertyReaderSingleton");
 			value = (String) propertyReaderSingleton.getValue(key);
-		}catch(Exception e){
+		} catch (Exception e) {
 			System.out.println(e.getMessage());
 		}
 		System.out.println("Inside Service Layer " + value);
-		return Response.status(200)
-				.entity("Value " + value)
-				.build();
+		return Response.status(200).entity("Value " + value).build();
 	}
-	
+
 	@GET
 	@Path("/reloadConfigurations")
 	@Produces(MediaType.TEXT_PLAIN)
-	public Response reload() throws NamingException{
+	public Response reload() throws NamingException {
 		InitialContext ic = new InitialContext();
 		PropertyReaderSingleton propertyReaderSingleton = null;
-		propertyReaderSingleton = (PropertyReaderSingleton) ic.lookup("java:module/PropertyReaderSingleton!com.beans.PropertyReaderSingleton");
+		propertyReaderSingleton = (PropertyReaderSingleton) ic
+				.lookup("java:module/PropertyReaderSingleton!com.beans.PropertyReaderSingleton");
 		propertyReaderSingleton.reloadProperty();
+		System.out.println("Inside reload");
 		return Response.status(200).entity("Reload Sucessfully!!!").build();
 	}
+	
+	@POST
+	@Path("/sendMail")
+	@Consumes(MediaType.APPLICATION_JSON)
+	@Produces(MediaType.TEXT_PLAIN)
+	public String send(String data){
+		String status = "true";
+		pushHook = null;
+		ObjectMapper objectMapper = new ObjectMapper();
+		try{
+			pushHook = objectMapper.readValue(data, git.client.hooks.PushHookV2.class);
+			MailComposer mailComposer = new MailComposer();
+			mailComposer.sendMail(pushHook);
+		}catch(Exception e){
+			System.out.println(e.getMessage());
+		}
+		return status;
+		
+	}
+	
+	
 }

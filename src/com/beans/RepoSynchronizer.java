@@ -42,7 +42,7 @@ public class RepoSynchronizer {
 	}
 	
 	public static void main(String args[]) throws IOException{
-		Runtime rt = Runtime.getRuntime();
+	/*	Runtime rt = Runtime.getRuntime();
 		String branchName = "BranchOne";
 		String cmdd = "cmd /c start D:\\Praveen\\GitLabHooks\\gitlabHA.bat "+branchName;
 		Process proc = rt.exec(cmdd);
@@ -51,7 +51,13 @@ public class RepoSynchronizer {
 		while ((temp = input.readLine()) != null)
 		   System.out.println(temp);
 		  
-		input.close();
+		input.close();*/
+		
+		String gname= "01_Starr_BordereauImport";
+		String[] groupName=gname.split("_");
+		System.out.println(groupName[0]);
+		
+		
 		
 	}
 }

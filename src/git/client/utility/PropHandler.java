@@ -8,19 +8,17 @@ import java.util.Properties;
 
 public class PropHandler {
 
-	@SuppressWarnings("null")
 	public static void main(String[] args) throws IOException {
 		InputStream is = null;
-        Properties prop = null;
-        	prop = new Properties();
-        is = new FileInputStream(new File("D:\\Praveen\\GitLabHooks\\Property\\GitLabConfiguration.properties"));
+		Properties prop = null;
+		prop = new Properties();
+		is = new FileInputStream(new File("D:\\Praveen\\GitLabHooks\\Property\\GitLabConfiguration.properties"));
 		prop.load(is);
 		is.close();
+
+		System.out.println(prop.getProperty("TEAM_SIZE"));
 		
-		System.out.println(prop.getProperty("TEAM_SIZE"));;
-		
-		
-		
+
 	}
 
 }

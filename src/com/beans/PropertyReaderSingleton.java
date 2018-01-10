@@ -12,50 +12,46 @@ import javax.ejb.Startup;
 @Startup
 public class PropertyReaderSingleton {
 
-	private  Properties properties = new Properties();
-	
+	private Properties properties = new Properties();
+
 	@PostConstruct
-	public  void loadProperties(){
-		
+	public void loadProperties() {
+
 		FileInputStream fileInputStream = null;
-		try{
-			try{
-			fileInputStream = new FileInputStream("D:\\Praveen\\GitLabHooks\\Property\\GitLabConfiguration.properties");
-			}
-			catch(FileNotFoundException fileNotFoundException){
+		try {
+			try {
+				fileInputStream = new FileInputStream(
+						"D:\\Praveen\\GitLabHooks\\Property\\GitLabConfiguration.properties");
+			} catch (FileNotFoundException fileNotFoundException) {
 				System.out.println(fileNotFoundException.getMessage());
 			}
 			if (fileInputStream != null) {
-		        this.properties.load(fileInputStream);
-		        
-		      }
-		}catch(Exception e){
+				this.properties.load(fileInputStream);
+			}
+		} catch (Exception e) {
 			System.out.println(e.getMessage());
-		}finally{
-			try
-		      {
-		        if (fileInputStream != null) {
-		          fileInputStream.close();
-		        }
-		      }
-		      catch (Exception exception)
-		      {
-		      System.out.println(exception.getMessage());
-		      }
+		} finally {
+			try {
+				if (fileInputStream != null) {
+					fileInputStream.close();
+				}
+			} catch (Exception exception) {
+				System.out.println(exception.getMessage());
+			}
 		}
 	}
-	
-	public  String getValue(String key){
-		String value="";
-		try{
-			value=this.properties.getProperty(key);
-		}catch(Exception e){
+
+	public String getValue(String key) {
+		String value = "";
+		try {
+			value = this.properties.getProperty(key);
+		} catch (Exception e) {
 			System.out.println(e.getMessage());
 		}
 		return value;
 	}
-	
-	public void reloadProperty(){
-	loadProperties();	
+
+	public void reloadProperty() {
+		loadProperties();
 	}
 }
